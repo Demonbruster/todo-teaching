@@ -2,23 +2,17 @@ import { Button } from "@mui/material";
 import { Container } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { fetchTodo } from "../BAL/fetcher";
 import Header from "../components/header";
 
-export default function Todo() {
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    fetchTodo().then(setRows);
-  }, []);
-
+export default function Todo({data}) {
   return (
     <>
       <Header />
       <Container component="main" maxWidth="lg">
         <h1>Todo</h1>
-        <DataTable rows={rows} />
+        <DataTable rows={data} />
       </Container>
     </>
   );
@@ -49,3 +43,13 @@ const DataTable = ({ rows }) => {
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  return await fetchTodo().then((data) => {
+    return {
+      props: {
+        data,
+      },
+    };
+  });
+}
